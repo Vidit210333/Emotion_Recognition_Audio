@@ -9,6 +9,8 @@ Original file is located at
 import streamlit as st
 from PIL import Image
 import pickle
+from google.colab import drive
+drive.mount('/content/drive')
 # from keras.models import load_model
 # import librosa
 # import numpy as np
