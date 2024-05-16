@@ -73,8 +73,8 @@ class EmotionRecognizer:
 def main():
     st.title("Emotion Recognizer")
 
-    model_path = "/content/drive/MyDrive/DL_PROJECT/model_checkpoint_Audio_Baseline_V2.keras"
-    model = load_model(model_path)
+    model_path = "/content/drive/MyDrive/DL_PROJECT/model_checkpoint_Audio_Baseline_V2.joblib"
+    model = joblib.load(model_path)
 
     recognizer = EmotionRecognizer(model)
 
