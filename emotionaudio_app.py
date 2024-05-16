@@ -9,8 +9,18 @@ Original file is located at
 import streamlit as st
 from PIL import Image
 import pickle
-from google.colab import drive
-drive.mount('/content/drive')
+import requests
+
+# Function to download file from URL
+def download_file(url, filename):
+    response = requests.get(url)
+    with open(filename, 'wb') as f:
+        f.write(response.content)
+
+# Download the model file from the cloud storage
+model_url = "https://drive.google.com/file/d/1Lf9QhN7DMf8WnVYYgjEmwZ1kmbc-U0Dt/view?usp=drive_link"
+model_path = "/tmp/model.h5"  # Temporary location to save the model file
+download_file(model_url, model_path)
 # from keras.models import load_model
 # import librosa
 # import numpy as np
@@ -74,8 +84,6 @@ class EmotionRecognizer:
 # Streamlit app
 def main():
     st.title("Emotion Recognizer")
-
-    model_path = "/content/drive/MyDrive/DL_PROJECT/model_checkpoint_Audio_Baseline_V2.pickle"
     with open(model_path, 'rb') as f:
       model = pickle.load(f)
 
