@@ -73,8 +73,9 @@ class EmotionRecognizer:
 def main():
     st.title("Emotion Recognizer")
 
-    model_path = "/content/drive/MyDrive/DL_PROJECT/model_checkpoint_Audio_Baseline_V2.joblib"
-    model = joblib.load(model_path)
+    model_path = "/content/drive/MyDrive/DL_PROJECT/model_checkpoint_Audio_Baseline_V2.pickle"
+    with open(pickle_model_path, 'rb') as f:
+      model = pickle.load(f)
 
     recognizer = EmotionRecognizer(model)
 
