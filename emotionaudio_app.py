@@ -18,8 +18,8 @@ def download_file(url, filename):
         f.write(response.content)
 
 # Download the model file from the cloud storage
-model_url = "https://drive.google.com/file/d/1Lf9QhN7DMf8WnVYYgjEmwZ1kmbc-U0Dt/view?usp=drive_link"
-model_path = "/tmp/model.h5"  # Temporary location to save the model file
+model_url = "https://drive.google.com/file/d/1--JB3fEwUl3EtjiTHvqR6qbeINTujnVL/view?usp=sharing"
+model_path = "/tmp/model.pickle"  # Temporary location to save the model file
 download_file(model_url, model_path)
 # from keras.models import load_model
 # import librosa
