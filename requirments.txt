@@ -1,0 +1,5 @@
+streamlit==1.34.0
+keras==2.6.0
+librosa==0.8.1
+matplotlib==3.4.3
+pillow==8.4.0
