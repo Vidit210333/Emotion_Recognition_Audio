@@ -11,14 +11,7 @@ from PIL import Image
 import pickle
 import requests
 import os
-
-# Ensure gdown is installed and import it
-try:
-    import gdown
-except ImportError:
-    import subprocess
-    subprocess.run(["pip", "install", "gdown"])
-    import gdown
+import gdown  # Directly import gdown assuming it is already installed
 
 # Function to download file from Google Drive using gdown
 def download_file_from_google_drive(file_id, destination):
@@ -98,3 +91,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
