@@ -11,6 +11,14 @@ from PIL import Image
 import pickle
 import requests
 import os
+import subprocess
+
+# Install gdown if not already installed
+try:
+    import gdown
+except ImportError:
+    subprocess.run(["pip", "install", "gdown"])
+    import gdown
 
 # Function to download file from Google Drive using gdown
 def download_file_from_google_drive(file_id, destination):
@@ -23,11 +31,6 @@ model_path = "/tmp/model.pickle"
 
 # Download the model file from Google Drive
 download_file_from_google_drive(model_id, model_path)
-# from keras.models import load_model
-# import librosa
-# import numpy as np
-# import matplotlib.pyplot as plt
-# import io
 
 class EmotionRecognizer:
 
@@ -56,7 +59,6 @@ class EmotionRecognizer:
         plt.close(fig)
         img = self.fig_to_image(fig)
         img = img.resize((224, 224))
-        # print(img.size)
         return img
 
     def recognize_emotions(self, frames, sampling_rate):
@@ -87,7 +89,7 @@ class EmotionRecognizer:
 def main():
     st.title("Emotion Recognizer")
     with open(model_path, 'rb') as f:
-      model = pickle.load(f)
+        model = pickle.load(f)
 
     recognizer = EmotionRecognizer(model)
 
@@ -100,3 +102,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
