@@ -10,17 +10,21 @@ import streamlit as st
 from PIL import Image
 import pickle
 import requests
+import os
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
 
-# Function to download file from URL
-def download_file(url, filename):
-    response = requests.get(url)
-    with open(filename, 'wb') as f:
-        f.write(response.content)
-
-# Download the model file from the cloud storage
-model_url = "https://drive.google.com/file/d/1--JB3fEwUl3EtjiTHvqR6qbeINTujnVL/view?usp=sharing"
-model_path = "/tmp/model.pickle"  # Temporary location to save the model file
-download_file(model_url, model_path)
+def download_file_from_google_drive(file_id, destination):
+    gauth = GoogleAuth()
+    gauth.LocalWebserverAuth() # Creates local webserver and auto handles authentication.
+    drive = GoogleDrive(gauth)
+    file_obj = drive.CreateFile({'id': file_id})
+    file_obj.GetContentFile(destination)
+    
+model_id = "1Lf9QhN7DMf8WnVYYgjEmwZ1kmbc-U0Dt"
+model_path = "/tmp/model.pickle"
+# Download the model file from Google Drive
+download_file_from_google_drive(model_id, model_path)
 # from keras.models import load_model
 # import librosa
 # import numpy as np
