@@ -14,11 +14,6 @@ import os
 import subprocess
 
 # Install gdown if not already installed
-try:
-    import gdown
-except ImportError:
-    subprocess.run(["pip", "install", "gdown"])
-    import gdown
 
 # Function to download file from Google Drive using gdown
 def download_file_from_google_drive(file_id, destination):
