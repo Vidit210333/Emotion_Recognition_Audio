@@ -11,9 +11,14 @@ from PIL import Image
 import pickle
 import requests
 import os
-import subprocess
 
-# Install gdown if not already installed
+# Ensure gdown is installed and import it
+try:
+    import gdown
+except ImportError:
+    import subprocess
+    subprocess.run(["pip", "install", "gdown"])
+    import gdown
 
 # Function to download file from Google Drive using gdown
 def download_file_from_google_drive(file_id, destination):
@@ -28,7 +33,6 @@ model_path = "/tmp/model.pickle"
 download_file_from_google_drive(model_id, model_path)
 
 class EmotionRecognizer:
-
     def __init__(self, model):
         self.loaded_model = model
         self.class_to_labels = ["Fearful", "Neutral", "Happy", "Sad", "Angry"]
@@ -38,10 +42,8 @@ class EmotionRecognizer:
         buf = io.BytesIO()
         fig.savefig(buf, format='png')
         buf.seek(0)
-
         # Convert PNG buffer to PIL Image
         img = Image.open(buf)
-
         return img
 
     def create_spectrogram_audio_break(self, y, sr):
@@ -77,7 +79,6 @@ class EmotionRecognizer:
         for i in range(0, len(y), frame_length):
             frame = y[i:i+frame_length]
             frames.append(frame)
-
         return frames, sr
 
 # Streamlit app
@@ -97,5 +98,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
