@@ -10,7 +10,6 @@ import streamlit as st
 from PIL import Image
 import pickle
 import requests
-import gdown
 import os
 
 # Function to download file from Google Drive using gdown
