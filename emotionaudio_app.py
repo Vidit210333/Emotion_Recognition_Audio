@@ -1,9 +1,27 @@
 import streamlit as st
 from PIL import Image
-# import librosa
 import numpy as np
-# import matplotlib.pyplot as plt
+import tensorflow as tf
+import gdown
+import os
 import io
+import librosa
+import librosa.display
+import matplotlib.pyplot as plt
+
+# Google Drive file ID and destination file path
+file_id = 'YOUR_FILE_ID'  # Replace with your file ID
+output = 'model_checkpoint_Audio_Baseline_V2.keras'
+
+# Function to download the model from Google Drive
+@st.cache_resource
+def download_and_load_model(file_id, output):
+    if not os.path.exists(output):
+        gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
+    return tf.keras.models.load_model(output)
+
+# Load the model
+model = download_and_load_model(file_id, output)
 
 class EmotionRecognizer:
 
@@ -32,7 +50,6 @@ class EmotionRecognizer:
         plt.close(fig)
         img = self.fig_to_image(fig)
         img = img.resize((224, 224))
-        # print(img.size)
         return img
 
     def recognize_emotions(self, frames, sampling_rate):
@@ -63,10 +80,7 @@ class EmotionRecognizer:
 def main():
     st.title("Emotion Recognizer")
 
-    # model_path = "/content/drive/MyDrive/DL_PROJECT/model_checkpoint_Audio_Baseline_V2.keras"
-    # model = load_model(model_path)
-
-    # recognizer = EmotionRecognizer(model)
+    recognizer = EmotionRecognizer(model)
 
     audio_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
 
