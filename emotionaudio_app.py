@@ -74,7 +74,7 @@ def main():
         
         # Load the model
         # model_path = "optimized_model_audio.keras"  # Update with your model path
-        model = pickle.load(open('diab', 'rb'))
+        model = pickle.load(open('model_checkpoint_Audio_Baseline_V2_optimized.pickle', 'rb'))
         
         recognizer = EmotionRecognizer(model)
         
