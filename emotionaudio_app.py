@@ -1,27 +1,13 @@
 import streamlit as st
-from PIL import Image
 import numpy as np
-import tensorflow as tf
-import gdown
-import os
-import io
 import librosa
 import librosa.display
 import matplotlib.pyplot as plt
-
-# Google Drive file ID and destination file path
-file_id = 'YOUR_FILE_ID'  # Replace with your file ID
-output = 'model_checkpoint_Audio_Baseline_V2.keras'
-
-# Function to download the model from Google Drive
-@st.cache_resource
-def download_and_load_model(file_id, output):
-    if not os.path.exists(output):
-        gdown.download(f"https://drive.google.com/uc?id={file_id}", output, quiet=False)
-    return tf.keras.models.load_model(output)
-
-# Load the model
-model = download_and_load_model(file_id, output)
+from PIL import Image
+import io
+from keras.models import load_model
+from tensorflow.keras.preprocessing import image
+import joblib
 
 class EmotionRecognizer:
 
@@ -34,10 +20,8 @@ class EmotionRecognizer:
         buf = io.BytesIO()
         fig.savefig(buf, format='png')
         buf.seek(0)
-
         # Convert PNG buffer to PIL Image
         img = Image.open(buf)
-
         return img
 
     def create_spectrogram_audio_break(self, y, sr):
@@ -49,19 +33,19 @@ class EmotionRecognizer:
         librosa.display.specshow(log_ms, sr=sr)
         plt.close(fig)
         img = self.fig_to_image(fig)
-        img = img.resize((224, 224))
+        img = img.resize((64, 64))
         return img
 
     def recognize_emotions(self, frames, sampling_rate):
         emotions = []
         for i, frame in enumerate(frames):
             x = self.create_spectrogram_audio_break(frame, sampling_rate)
-            x = np.array(x)[:, :, :3]  # Convert to numpy array and keep only RGB channels
+            x = image.img_to_array(x)
+            x = x[:, :, :3]
             x = x.reshape((1,) + x.shape)  # Add batch dimension
             predictions = self.loaded_model.predict(x)
             for j, label in enumerate(self.class_to_labels):
                 if predictions[0][j] == 1:
-                    st.write(f"Frame {i} Emotion: {label}")  # Display emotion in Streamlit
                     emotions.append(label)
         return emotions
 
@@ -73,21 +57,37 @@ class EmotionRecognizer:
         for i in range(0, len(y), frame_length):
             frame = y[i:i+frame_length]
             frames.append(frame)
-
         return frames, sr
 
-# Streamlit app
 def main():
-    st.title("Emotion Recognizer")
+    st.title("Emotion Recognition from Audio")
+    st.write("Upload an audio file and the application will predict the emotions expressed in the audio.")
 
-    recognizer = EmotionRecognizer(model)
+    # Upload audio file
+    uploaded_file = st.file_uploader("Choose an audio file...", type=["wav", "mp3"])
+    
+    if uploaded_file is not None:
+        st.audio(uploaded_file, format='audio/wav')
 
-    audio_file = st.file_uploader("Upload an audio file", type=["mp3", "wav"])
-
-    if audio_file is not None:
-        frames, sampling_rate = recognizer.break_audio_into_frames(audio_file)
+        with open("temp_audio_file.wav", "wb") as f:
+            f.write(uploaded_file.getbuffer())
+        
+        # Load the model
+        # model_path = "optimized_model_audio.keras"  # Update with your model path
+        model = pickle.load(open('diab', 'rb'))
+        
+        recognizer = EmotionRecognizer(model)
+        
+        # Process the audio file
+        frames, sampling_rate = recognizer.break_audio_into_frames("temp_audio_file.wav")
+        
+        # Recognize emotions
         emotions = recognizer.recognize_emotions(frames, sampling_rate)
-        st.success("Emotion recognition completed.")
+        
+        # Display the results
+        st.write("Recognized Emotions:")
+        for emotion in emotions:
+            st.write(emotion)
 
 if __name__ == "__main__":
     main()
