@@ -68,10 +68,9 @@ def main():
             f.write(uploaded_file.getbuffer())
         
         # Load the model
-        model_path = 'model_checkpoint_Audio_Baseline_V2_optimized.pickle'  # Update with your model path
-        with open(model_path, 'rb') as model_file:
-            model = pickle.load(model_file)
-        
+        model_path = r'model_checkpoint_Audio_Baseline_V2_optimized.pickle'  # Update with your model path
+        model = pickle.load(open(model_path, 'rb'))
+
         recognizer = EmotionRecognizer(model)
         
         # Process the audio file
