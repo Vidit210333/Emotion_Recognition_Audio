@@ -3,6 +3,7 @@ import numpy as np
 from PIL import Image
 import io
 import pickle  # Ensure to import pickle
+!pip install keras
 
 
 class EmotionRecognizer:
