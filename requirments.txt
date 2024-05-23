@@ -1,7 +1,7 @@
 streamlit
 tensorflow
-gdown
+keras==2.6.0
 Pillow
 librosa
 matplotlib
-keras
+
