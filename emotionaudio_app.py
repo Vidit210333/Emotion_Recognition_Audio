@@ -5,9 +5,8 @@ import librosa.display
 import matplotlib.pyplot as plt
 from PIL import Image
 import io
-from keras.models import load_model
+import pickle  # Ensure to import pickle
 from tensorflow.keras.preprocessing import image
-import joblib
 
 class EmotionRecognizer:
 
@@ -44,9 +43,8 @@ class EmotionRecognizer:
             x = x[:, :, :3]
             x = x.reshape((1,) + x.shape)  # Add batch dimension
             predictions = self.loaded_model.predict(x)
-            for j, label in enumerate(self.class_to_labels):
-                if predictions[0][j] == 1:
-                    emotions.append(label)
+            predicted_label = self.class_to_labels[np.argmax(predictions)]
+            emotions.append(predicted_label)
         return emotions
 
     def break_audio_into_frames(self, audio_file, frame_duration=3):
@@ -67,14 +65,15 @@ def main():
     uploaded_file = st.file_uploader("Choose an audio file...", type=["wav", "mp3"])
     
     if uploaded_file is not None:
-        st.audio(uploaded_file, format='audio/wav')
+        st.audio(uploaded_file, format='audio/wav' if uploaded_file.type == 'audio/wav' else 'audio/mp3')
 
         with open("temp_audio_file.wav", "wb") as f:
             f.write(uploaded_file.getbuffer())
         
         # Load the model
-        # model_path = "optimized_model_audio.keras"  # Update with your model path
-        model = pickle.load(open('model_checkpoint_Audio_Baseline_V2_optimized.pickle', 'rb'))
+        model_path = 'model_checkpoint_Audio_Baseline_V2_optimized.pickle'  # Update with your model path
+        with open(model_path, 'rb') as model_file:
+            model = pickle.load(model_file)
         
         recognizer = EmotionRecognizer(model)
         
